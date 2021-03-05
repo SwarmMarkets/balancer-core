@@ -287,6 +287,7 @@ contract('BPool', async (accounts) => {
             // Call function
             const poolRatio = 0.9;
             const poolAmountOut = currentPoolBalance * (poolRatio);
+
             await truffleAssert.reverts(
                 pool.joinswapPoolAmountOut(DAI, toWei(String(poolAmountOut)), MAX),
                 'ERR_MAX_IN_RATIO',
@@ -298,8 +299,11 @@ contract('BPool', async (accounts) => {
             const poolRatioAfterExitFee = 1.1;
             const tokenRatioBeforeSwapFee = poolRatioAfterExitFee ** (1 / daiNorm);
             const tokenAmountOut = currentDaiBalance * (1 - tokenRatioBeforeSwapFee) * (1 - swapFee * (1 - daiNorm));
+
+            // tokenAmountOut is negative, and this version of web3.js throws when passing negative numbers on uint params
+            // so we mimic the behavior of underflowing unsigned numbers
             await truffleAssert.reverts(
-                pool.exitswapExternAmountOut(DAI, toWei(String(tokenAmountOut)), MAX),
+                pool.exitswapExternAmountOut(DAI, web3.utils.toTwosComplement(toWei(String(tokenAmountOut))), MAX),
                 'ERR_MAX_OUT_RATIO',
             );
         });
@@ -308,6 +312,7 @@ contract('BPool', async (accounts) => {
             // Call function
             const poolRatioAfterExitFee = 0.9;
             const poolAmountIn = currentPoolBalance * (1 - poolRatioAfterExitFee) * (1 / (1 - exitFee));
+
             await truffleAssert.reverts(
                 pool.exitswapPoolAmountIn(WETH, toWei(String(poolAmountIn)), toWei('0')),
                 'ERR_MAX_OUT_RATIO',

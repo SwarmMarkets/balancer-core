@@ -74,7 +74,9 @@ contract('BFactory', async (accounts) => {
 
             await pool.finalize();
 
-            await pool.joinPool(toWei('10'), [MAX, MAX], { from: nonAdmin });
+            const test = await pool.joinPool(toWei('10'), [MAX, MAX], { from: nonAdmin });
+            console.log(test)
+
             await pool.exitPool(toWei('10'), [toWei('0'), toWei('0')], { from: nonAdmin });
 
             // Exit fee = 0 so this wont do anything
