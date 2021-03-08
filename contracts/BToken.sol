@@ -14,24 +14,8 @@
 pragma solidity ^0.7.0;
 
 import "./BNum.sol";
+import "./IERC20.sol";
 import "@openzeppelin/contracts/proxy/Initializable.sol";
-
-// Highly opinionated token implementation
-
-interface IERC20 {
-    // event Approval(address indexed src, address indexed dst, uint amt);
-    // event Transfer(address indexed src, address indexed dst, uint amt);
-
-    function totalSupply() external view returns (uint);
-    function balanceOf(address whom) external view returns (uint);
-    function allowance(address src, address dst) external view returns (uint);
-
-    function approve(address dst, uint amt) external returns (bool);
-    function transfer(address dst, uint amt) external returns (bool);
-    function transferFrom(
-        address src, address dst, uint amt
-    ) external returns (bool);
-}
 
 abstract contract BTokenBase is BNum {
 

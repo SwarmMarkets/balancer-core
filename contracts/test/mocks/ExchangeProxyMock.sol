@@ -1,5 +1,7 @@
 pragma solidity ^0.7.0;
 
+import "../../IERC20.sol";
+
 interface IBPool {
     function getCurrentTokens() external view returns (address[] memory tokens);
 
@@ -48,16 +50,6 @@ interface IBPool {
     ) external returns (uint256 poolAmountIn);
 }
 
-interface IERC20Min {
-    function balanceOf(address whom) external view returns (uint);
-    function approve(address dst, uint amt) external returns (bool);
-    function transfer(address dst, uint amt) external returns (bool);
-    function transferFrom(
-        address src, address dst, uint amt
-    ) external returns (bool);
-}
-
-
 contract ExchangeProxyMock {
    event LOG_SWAP(
       address indexed caller,
@@ -71,28 +63,28 @@ contract ExchangeProxyMock {
     address[] memory tokens = IBPool(pool).getCurrentTokens();
 
     for (uint i = 0; i < tokens.length; i++) {
-      IERC20Min(tokens[i]).transferFrom(msg.sender, address(this), IERC20Min(tokens[i]).balanceOf(msg.sender));
-      IERC20Min(tokens[i]).approve(pool, maxAmountsIn[i]);
+      IERC20(tokens[i]).transferFrom(msg.sender, address(this), IERC20(tokens[i]).balanceOf(msg.sender));
+      IERC20(tokens[i]).approve(pool, maxAmountsIn[i]);
     }
 
     IBPool(pool).joinPool(poolAmountOut, maxAmountsIn);
 
     for (uint i = 0; i < tokens.length; i++) {
-      uint256 balance = IERC20Min(tokens[i]).balanceOf(address(this));
-      IERC20Min(tokens[i]).transfer(msg.sender, balance);
+      uint256 balance = IERC20(tokens[i]).balanceOf(address(this));
+      IERC20(tokens[i]).transfer(msg.sender, balance);
     }
 
-    IERC20Min(pool).transfer(msg.sender, IERC20Min(pool).balanceOf(address(this)));
+    IERC20(pool).transfer(msg.sender, IERC20(pool).balanceOf(address(this)));
   }
 
   function exitPool(address pool, uint256 poolAmountIn, uint256[] calldata minAmountsOut) external {
-    IERC20Min(pool).transferFrom(msg.sender, address(this), IERC20Min(pool).balanceOf(msg.sender));
+    IERC20(pool).transferFrom(msg.sender, address(this), IERC20(pool).balanceOf(msg.sender));
     IBPool(pool).exitPool(poolAmountIn, minAmountsOut);
 
     address[] memory tokens = IBPool(pool).getCurrentTokens();
     for (uint i = 0; i < tokens.length; i++) {
-      uint256 balance = IERC20Min(tokens[i]).balanceOf(address(this));
-      IERC20Min(tokens[i]).transfer(msg.sender, balance);
+      uint256 balance = IERC20(tokens[i]).balanceOf(address(this));
+      IERC20(tokens[i]).transfer(msg.sender, balance);
     }
   }
 
@@ -104,8 +96,8 @@ contract ExchangeProxyMock {
       uint256 minAmountOut,
       uint256 maxPrice
   ) external returns (uint256 tokenAmountOut, uint256 spotPriceAfter) {
-    IERC20Min(tokenIn).transferFrom(msg.sender, address(this), IERC20Min(tokenIn).balanceOf(msg.sender));
-    IERC20Min(tokenIn).approve(pool, tokenAmountIn);
+    IERC20(tokenIn).transferFrom(msg.sender, address(this), IERC20(tokenIn).balanceOf(msg.sender));
+    IERC20(tokenIn).approve(pool, tokenAmountIn);
 
     (tokenAmountOut, spotPriceAfter) = IBPool(pool).swapExactAmountIn(
       tokenIn,
@@ -115,8 +107,8 @@ contract ExchangeProxyMock {
       maxPrice
     );
 
-    IERC20Min(tokenIn).transfer(msg.sender, IERC20Min(tokenIn).balanceOf(address(this)));
-    IERC20Min(tokenOut).transfer(msg.sender, IERC20Min(tokenOut).balanceOf(address(this)));
+    IERC20(tokenIn).transfer(msg.sender, IERC20(tokenIn).balanceOf(address(this)));
+    IERC20(tokenOut).transfer(msg.sender, IERC20(tokenOut).balanceOf(address(this)));
 
     emit LOG_SWAP(msg.sender, tokenIn, tokenOut, tokenAmountIn, tokenAmountOut);
   }
@@ -129,8 +121,8 @@ contract ExchangeProxyMock {
       uint256 tokenAmountOut,
       uint256 maxPrice
   ) external returns (uint256 tokenAmountIn, uint256 spotPriceAfter) {
-    IERC20Min(tokenIn).transferFrom(msg.sender, address(this), IERC20Min(tokenIn).balanceOf(msg.sender));
-    IERC20Min(tokenIn).approve(pool, maxAmountIn);
+    IERC20(tokenIn).transferFrom(msg.sender, address(this), IERC20(tokenIn).balanceOf(msg.sender));
+    IERC20(tokenIn).approve(pool, maxAmountIn);
 
     (tokenAmountIn, spotPriceAfter) = IBPool(pool).swapExactAmountOut(
       tokenIn,
@@ -140,8 +132,8 @@ contract ExchangeProxyMock {
       maxPrice
     );
 
-    IERC20Min(tokenIn).transfer(msg.sender, IERC20Min(tokenIn).balanceOf(address(this)));
-    IERC20Min(tokenOut).transfer(msg.sender, IERC20Min(tokenOut).balanceOf(address(this)));
+    IERC20(tokenIn).transfer(msg.sender, IERC20(tokenIn).balanceOf(address(this)));
+    IERC20(tokenOut).transfer(msg.sender, IERC20(tokenOut).balanceOf(address(this)));
 
     emit LOG_SWAP(msg.sender, tokenIn, tokenOut, tokenAmountIn, tokenAmountOut);
   }
@@ -152,8 +144,8 @@ contract ExchangeProxyMock {
       uint256 tokenAmountIn,
       uint256 minPoolAmountOut
   ) external returns (uint256 poolAmountOut) {
-    IERC20Min(tokenIn).transferFrom(msg.sender, address(this), IERC20Min(tokenIn).balanceOf(msg.sender));
-    IERC20Min(tokenIn).approve(pool, tokenAmountIn);
+    IERC20(tokenIn).transferFrom(msg.sender, address(this), IERC20(tokenIn).balanceOf(msg.sender));
+    IERC20(tokenIn).approve(pool, tokenAmountIn);
 
     poolAmountOut = IBPool(pool).joinswapExternAmountIn(
       tokenIn,
@@ -161,8 +153,8 @@ contract ExchangeProxyMock {
       minPoolAmountOut
     );
 
-    IERC20Min(tokenIn).transfer(msg.sender, IERC20Min(tokenIn).balanceOf(address(this)));
-    IERC20Min(pool).transfer(msg.sender, IERC20Min(pool).balanceOf(address(this)));
+    IERC20(tokenIn).transfer(msg.sender, IERC20(tokenIn).balanceOf(address(this)));
+    IERC20(pool).transfer(msg.sender, IERC20(pool).balanceOf(address(this)));
   }
 
   function joinswapPoolAmountOut(
@@ -171,8 +163,8 @@ contract ExchangeProxyMock {
       uint256 poolAmountOut,
       uint256 maxAmountIn
   ) external returns (uint256 tokenAmountIn) {
-    IERC20Min(tokenIn).transferFrom(msg.sender, address(this), IERC20Min(tokenIn).balanceOf(msg.sender));
-    IERC20Min(tokenIn).approve(pool, maxAmountIn);
+    IERC20(tokenIn).transferFrom(msg.sender, address(this), IERC20(tokenIn).balanceOf(msg.sender));
+    IERC20(tokenIn).approve(pool, maxAmountIn);
 
     tokenAmountIn = IBPool(pool).joinswapPoolAmountOut(
       tokenIn,
@@ -180,8 +172,8 @@ contract ExchangeProxyMock {
       maxAmountIn
     );
 
-    IERC20Min(tokenIn).transfer(msg.sender, IERC20Min(tokenIn).balanceOf(address(this)));
-    IERC20Min(pool).transfer(msg.sender, IERC20Min(pool).balanceOf(address(this)));
+    IERC20(tokenIn).transfer(msg.sender, IERC20(tokenIn).balanceOf(address(this)));
+    IERC20(pool).transfer(msg.sender, IERC20(pool).balanceOf(address(this)));
   }
 
   function exitswapPoolAmountIn(
@@ -190,7 +182,7 @@ contract ExchangeProxyMock {
       uint256 poolAmountIn,
       uint256 minAmountOut
   ) external returns (uint256 tokenAmountOut) {
-    IERC20Min(pool).transferFrom(msg.sender, address(this), IERC20Min(pool).balanceOf(msg.sender));
+    IERC20(pool).transferFrom(msg.sender, address(this), IERC20(pool).balanceOf(msg.sender));
 
     tokenAmountOut = IBPool(pool).exitswapPoolAmountIn(
       tokenOut,
@@ -198,8 +190,8 @@ contract ExchangeProxyMock {
       minAmountOut
     );
 
-    IERC20Min(tokenOut).transfer(msg.sender, IERC20Min(tokenOut).balanceOf(address(this)));
-    IERC20Min(pool).transfer(msg.sender, IERC20Min(pool).balanceOf(address(this)));
+    IERC20(tokenOut).transfer(msg.sender, IERC20(tokenOut).balanceOf(address(this)));
+    IERC20(pool).transfer(msg.sender, IERC20(pool).balanceOf(address(this)));
   }
 
   function exitswapExternAmountOut(
@@ -208,7 +200,7 @@ contract ExchangeProxyMock {
       uint256 tokenAmountOut,
       uint256 maxPoolAmountIn
   ) external returns (uint256 poolAmountIn) {
-    IERC20Min(pool).transferFrom(msg.sender, address(this), IERC20Min(pool).balanceOf(msg.sender));
+    IERC20(pool).transferFrom(msg.sender, address(this), IERC20(pool).balanceOf(msg.sender));
 
     poolAmountIn = IBPool(pool).exitswapExternAmountOut(
       tokenOut,
@@ -216,7 +208,7 @@ contract ExchangeProxyMock {
       maxPoolAmountIn
     );
 
-    IERC20Min(tokenOut).transfer(msg.sender, IERC20Min(tokenOut).balanceOf(address(this)));
-    IERC20Min(pool).transfer(msg.sender, IERC20Min(pool).balanceOf(address(this)));
+    IERC20(tokenOut).transfer(msg.sender, IERC20(tokenOut).balanceOf(address(this)));
+    IERC20(pool).transfer(msg.sender, IERC20(pool).balanceOf(address(this)));
   }
 }

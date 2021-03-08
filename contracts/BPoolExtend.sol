@@ -34,10 +34,6 @@ contract BPoolExtend is Proxy {
     );
 
     constructor(address _poolImpl, address _exchProxy, bytes memory _data) {
-        // assert(_EXCHANGE_PROXY_SLOT == bytes32(uint256(keccak256("balancer.exchange.proxy")) - 1));
-        // _setImplementation(_poolImpl);
-        // _setExchangeProxy(_exchProxy);
-
         implementation = _poolImpl;
         exchangeProxy = _exchProxy;
 
