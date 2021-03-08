@@ -3,6 +3,7 @@ const truffleAssert = require('truffle-assertions');
 const BPool = artifacts.require('BPool');
 const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
+const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
 
 contract('BPool', async (accounts) => {
     const admin = accounts[0];
@@ -17,12 +18,16 @@ contract('BPool', async (accounts) => {
     let aaa; let bbb; let ccc; let ddd; let eee; let fff; let ggg; let hhh; let
         zzz; // TTokens
     let factory; // BPool factory
+    let exchangeProxy;
     let FACTORY; // factory address
     let pool; // first pool w/ defaults
     let POOL; //   pool address
 
     before(async () => {
         factory = await BFactory.deployed();
+        exchangeProxy = await ExchangeProxyMock.deployed()
+        await factory.setExchProxy(exchangeProxy.address)
+
         FACTORY = factory.address;
 
         POOL = await factory.newBPool.call();
@@ -49,6 +54,7 @@ contract('BPool', async (accounts) => {
         HHH = hhh.address;
         ZZZ = zzz.address;
 
+
         // Admin balances
         await aaa.mint(admin, toWei('100'));
         await bbb.mint(admin, toWei('100'));
@@ -64,14 +70,23 @@ contract('BPool', async (accounts) => {
     describe('Binding Tokens', () => {
         it('Admin approves tokens', async () => {
             await aaa.approve(POOL, MAX);
+            await aaa.approve(exchangeProxy.address, MAX);
             await bbb.approve(POOL, MAX);
+            await bbb.approve(exchangeProxy.address, MAX);
             await ccc.approve(POOL, MAX);
+            await ccc.approve(exchangeProxy.address, MAX);
             await ddd.approve(POOL, MAX);
+            await ddd.approve(exchangeProxy.address, MAX);
             await eee.approve(POOL, MAX);
+            await eee.approve(exchangeProxy.address, MAX);
             await fff.approve(POOL, MAX);
+            await fff.approve(exchangeProxy.address, MAX);
             await ggg.approve(POOL, MAX);
+            await ggg.approve(exchangeProxy.address, MAX);
             await hhh.approve(POOL, MAX);
+            await hhh.approve(exchangeProxy.address, MAX);
             await zzz.approve(POOL, MAX);
+            await zzz.approve(exchangeProxy.address, MAX);
         });
 
         it('Admin binds tokens', async () => {
@@ -122,7 +137,15 @@ contract('BPool', async (accounts) => {
         it('Fails swapExactAmountIn with limits', async () => {
             await pool.setPublicSwap(true);
             await truffleAssert.reverts(
-                pool.swapExactAmountIn(
+                // pool.swapExactAmountIn(
+                //     AAA,
+                //     toWei('1'),
+                //     BBB,
+                //     toWei('0'),
+                //     toWei('0.9'),
+                // ),
+                exchangeProxy.swapExactAmountIn(
+                    pool.address,
                     AAA,
                     toWei('1'),
                     BBB,
@@ -132,66 +155,114 @@ contract('BPool', async (accounts) => {
                 'ERR_BAD_LIMIT_PRICE',
             );
             await truffleAssert.reverts(
-                pool.swapExactAmountIn(
+                exchangeProxy.swapExactAmountIn(
+                    pool.address,
                     AAA,
                     toWei('1'),
                     BBB,
                     toWei('2'),
                     toWei('3.5'),
                 ),
+                // pool.swapExactAmountIn(
+                //     AAA,
+                //     toWei('1'),
+                //     BBB,
+                //     toWei('2'),
+                //     toWei('3.5'),
+                // ),
                 'ERR_LIMIT_OUT',
             );
             await truffleAssert.reverts(
-                pool.swapExactAmountIn(
+                exchangeProxy.swapExactAmountIn(
+                    pool.address,
                     AAA,
                     toWei('1'),
                     BBB,
                     toWei('0'),
                     toWei('3.00001'),
                 ),
+                // pool.swapExactAmountIn(
+                //     AAA,
+                //     toWei('1'),
+                //     BBB,
+                //     toWei('0'),
+                //     toWei('3.00001'),
+                // ),
                 'ERR_LIMIT_PRICE',
             );
         });
 
         it('Fails swapExactAmountOut with limits', async () => {
             await truffleAssert.reverts(
-                pool.swapExactAmountOut(
+                exchangeProxy.swapExactAmountOut(
+                    pool.address,
                     AAA,
-                    toWei('51'),
+                    toWei('50'),
                     BBB,
                     toWei('40'),
                     toWei('5'),
                 ),
+                // pool.swapExactAmountOut(
+                //     AAA,
+                //     toWei('51'),
+                //     BBB,
+                //     toWei('40'),
+                //     toWei('5'),
+                // ),
                 'ERR_MAX_OUT_RATIO',
             );
             await truffleAssert.reverts(
-                pool.swapExactAmountOut(
+                exchangeProxy.swapExactAmountOut(
+                    pool.address,
                     AAA,
                     toWei('5'),
                     BBB,
                     toWei('1'),
                     toWei('1'),
                 ),
+                // pool.swapExactAmountOut(
+                //     AAA,
+                //     toWei('5'),
+                //     BBB,
+                //     toWei('1'),
+                //     toWei('1'),
+                // ),
                 'ERR_BAD_LIMIT_PRICE',
             );
             await truffleAssert.reverts(
-                pool.swapExactAmountOut(
+                exchangeProxy.swapExactAmountOut(
+                    pool.address,
                     AAA,
                     toWei('1'),
                     BBB,
                     toWei('1'),
                     toWei('5'),
                 ),
+                // pool.swapExactAmountOut(
+                //     AAA,
+                //     toWei('1'),
+                //     BBB,
+                //     toWei('1'),
+                //     toWei('5'),
+                // ),
                 'ERR_LIMIT_IN',
             );
             await truffleAssert.reverts(
-                pool.swapExactAmountOut(
+                exchangeProxy.swapExactAmountOut(
+                    pool.address,
                     AAA,
                     toWei('5'),
                     BBB,
                     toWei('1'),
                     toWei('3.00001'),
                 ),
+                // pool.swapExactAmountOut(
+                //     AAA,
+                //     toWei('5'),
+                //     BBB,
+                //     toWei('1'),
+                //     toWei('3.00001'),
+                // ),
                 'ERR_LIMIT_PRICE',
             );
         });

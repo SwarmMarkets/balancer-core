@@ -1,7 +1,10 @@
 const BPool = artifacts.require('BPool');
 const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
+const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
 const truffleAssert = require('truffle-assertions');
+
+const someAddress = '0x2489991C7AdFAA0DD96D2c46d344CCeaA1C0fD89'
 
 contract('BFactory', async (accounts) => {
     const admin = accounts[0];
@@ -16,6 +19,7 @@ contract('BFactory', async (accounts) => {
     describe('Factory', () => {
         let factory;
         let pool;
+        let exchangeProxy;
         let POOL;
         let WETH;
         let DAI;
@@ -24,6 +28,10 @@ contract('BFactory', async (accounts) => {
 
         before(async () => {
             factory = await BFactory.deployed();
+            exchangeProxy = await ExchangeProxyMock.deployed()
+
+            await factory.setExchProxy(exchangeProxy.address)
+
             weth = await TToken.new('Wrapped Ether', 'WETH', 18);
             dai = await TToken.new('Dai Stablecoin', 'DAI', 18);
 
@@ -45,8 +53,10 @@ contract('BFactory', async (accounts) => {
             await weth.approve(POOL, MAX);
             await dai.approve(POOL, MAX);
 
-            await weth.approve(POOL, MAX, { from: nonAdmin });
-            await dai.approve(POOL, MAX, { from: nonAdmin });
+            await weth.approve(exchangeProxy.address, MAX, { from: nonAdmin });
+            await dai.approve(exchangeProxy.address, MAX, { from: nonAdmin });
+
+            await pool.approve(exchangeProxy.address, MAX, { from: nonAdmin });
         });
 
         it('BFactory is bronze release', async () => {
@@ -74,10 +84,11 @@ contract('BFactory', async (accounts) => {
 
             await pool.finalize();
 
-            const test = await pool.joinPool(toWei('10'), [MAX, MAX], { from: nonAdmin });
-            console.log(test)
+            await exchangeProxy.joinPool(pool.address, toWei('10'), [toWei('1'), toWei('50')], { from: nonAdmin });
+            // await pool.joinPool(toWei('10'), [MAX, MAX], { from: nonAdmin });
 
-            await pool.exitPool(toWei('10'), [toWei('0'), toWei('0')], { from: nonAdmin });
+            await exchangeProxy.exitPool(pool.address, toWei('10'), [toWei('0'), toWei('0')], { from: nonAdmin });
+            // await pool.exitPool(toWei('10'), [toWei('0'), toWei('0')], { from: nonAdmin });
 
             // Exit fee = 0 so this wont do anything
             await factory.collect(POOL);
@@ -90,10 +101,30 @@ contract('BFactory', async (accounts) => {
             await truffleAssert.reverts(factory.setBLabs(nonAdmin, { from: nonAdmin }), 'ERR_NOT_BLABS');
         });
 
+        it('nonadmin cant set pool impl', async () => {
+            await truffleAssert.reverts(factory.setPoolImpl(someAddress, { from: nonAdmin }), 'ERR_NOT_BLABS');
+        });
+
+        it('nonadmin cant set exchange proxy', async () => {
+            await truffleAssert.reverts(factory.setExchProxy(someAddress, { from: nonAdmin }), 'ERR_NOT_BLABS');
+        });
+
         it('admin changes blabs address', async () => {
             await factory.setBLabs(user2);
             const blab = await factory.getBLabs();
             assert.equal(blab, user2);
+        });
+
+        it('admin changes pool impl address', async () => {
+            await factory.setPoolImpl(someAddress, {from: user2});
+            const impl = await factory._poolImpl();
+            assert.equal(impl, someAddress);
+        });
+
+        it('admin changes exchange proxy address', async () => {
+            await factory.setExchProxy(someAddress, {from: user2});
+            const exchProxy = await factory._exchProxy();
+            assert.equal(exchProxy, someAddress);
         });
     });
 });
