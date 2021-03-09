@@ -5,10 +5,10 @@ const BPool = artifacts.require('BPool');
 const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
-const errorDelta = 10 ** -8;
+const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
 const swapFee = 10 ** -3; // 0.001;
 const exitFee = 0;
-const verbose = process.env.VERBOSE;
+
 
 contract('BPoolExtend', async (accounts) => {
     const { toWei } = web3.utils;
@@ -22,6 +22,7 @@ contract('BPoolExtend', async (accounts) => {
     let factory; // BPool factory
     let exchangeProxy;
     let pool; // first pool w/ defaults
+    let operationsRegistry;
     let POOL; //   pool address
 
     const wethBalance = '4';
@@ -43,7 +44,10 @@ contract('BPoolExtend', async (accounts) => {
     before(async () => {
         factory = await BFactory.deployed();
         exchangeProxy = await ExchangeProxyMock.deployed()
+        operationsRegistry = await OperationsRegistryMock.deployed()
+
         await factory.setExchProxy(exchangeProxy.address)
+        await factory.setOperationsRegistry(operationsRegistry.address)
 
         POOL = await factory.newBPool.call(); // this works fine in clean room
         await factory.newBPool();
@@ -66,6 +70,27 @@ contract('BPoolExtend', async (accounts) => {
 
         await pool.approve(exchangeProxy.address, MAX);
 
+        // await pool.bind(WETH, toWei(wethBalance), toWei(wethDenorm));
+        // await pool.bind(DAI, toWei(daiBalance), toWei(daiDenorm));
+
+        // await pool.setPublicSwap(true);
+        // await pool.setSwapFee(toWei(String(swapFee)));
+
+        // await pool.finalize();
+    });
+
+    describe('Only allowed tokens', () => {
+      it('Fail calling bind with not allowed token', async () => {
+        await truffleAssert.reverts(
+          pool.bind(WETH, toWei(wethBalance), toWei(wethDenorm)),
+            'ERR_NOT_ALLOWED_TOKEN.',
+        );
+      });
+
+      it('Can call bind with allowed tokens', async () => {
+        await operationsRegistry.allowAsset(WETH)
+        await operationsRegistry.allowAsset(DAI)
+
         await pool.bind(WETH, toWei(wethBalance), toWei(wethDenorm));
         await pool.bind(DAI, toWei(daiBalance), toWei(daiDenorm));
 
@@ -73,7 +98,8 @@ contract('BPoolExtend', async (accounts) => {
         await pool.setSwapFee(toWei(String(swapFee)));
 
         await pool.finalize();
-    });
+      })
+    })
 
     describe('User interactions', () => {
       it('Fail calling joinPool directly', async () => {
