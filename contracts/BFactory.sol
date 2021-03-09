@@ -11,11 +11,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity 0.5.12;
+pragma solidity ^0.7.0;
 
 // Builds new BPools, logging their addresses and providing `isBPool(address) -> (bool)`
 
-import "./BPool.sol";
+import "./BColor.sol";
+import "./BPoolExtend.sol";
+import "./IERC20.sol";
+
+interface IBpool {
+    function initialize() external;
+    function setController(address manager) external;
+}
 
 contract BFactory is BBronze {
     event LOG_NEW_POOL(
@@ -28,6 +35,16 @@ contract BFactory is BBronze {
         address indexed blabs
     );
 
+    event LOG_POOLIMPL(
+        address indexed caller,
+        address indexed poolImpl
+    );
+
+    event LOG_EXCHPROXY(
+        address indexed caller,
+        address indexed exchProxy
+    );
+
     mapping(address=>bool) private _isBPool;
 
     function isBPool(address b)
@@ -38,19 +55,23 @@ contract BFactory is BBronze {
 
     function newBPool()
         external
-        returns (BPool)
+        returns (BPoolExtend)
     {
-        BPool bpool = new BPool();
+        BPoolExtend bpool = new BPoolExtend(_poolImpl, _exchProxy, abi.encodeWithSignature("initialize()"));
         _isBPool[address(bpool)] = true;
         emit LOG_NEW_POOL(msg.sender, address(bpool));
-        bpool.setController(msg.sender);
+        IBpool(address(bpool)).setController(msg.sender);
         return bpool;
     }
 
     address private _blabs;
+    address public _poolImpl;
+    address public _exchProxy;
 
-    constructor() public {
+    constructor(address poolImpl, address exchProxy) public {
         _blabs = msg.sender;
+        _poolImpl = poolImpl;
+        _exchProxy = exchProxy;
     }
 
     function getBLabs()
@@ -68,11 +89,27 @@ contract BFactory is BBronze {
         _blabs = b;
     }
 
-    function collect(BPool pool)
-        external 
+    function setPoolImpl(address poolImpl)
+        external
     {
         require(msg.sender == _blabs, "ERR_NOT_BLABS");
-        uint collected = IERC20(pool).balanceOf(address(this));
+        emit LOG_POOLIMPL(msg.sender, poolImpl);
+        _poolImpl = poolImpl;
+    }
+
+    function setExchProxy(address exchProxy)
+        external
+    {
+        require(msg.sender == _blabs, "ERR_NOT_BLABS");
+        emit LOG_EXCHPROXY(msg.sender, exchProxy);
+        _exchProxy = exchProxy;
+    }
+
+    function collect(IERC20 pool)
+        external
+    {
+        require(msg.sender == _blabs, "ERR_NOT_BLABS");
+        uint collected = pool.balanceOf(address(this));
         bool xfer = pool.transfer(_blabs, collected);
         require(xfer, "ERR_ERC20_FAILED");
     }

@@ -9,6 +9,7 @@ const {
 const BPool = artifacts.require('BPool');
 const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
+const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
 const errorDelta = 10 ** -8;
 const swapFee = 10 ** -3; // 0.001;
 const exitFee = 0;
@@ -24,6 +25,7 @@ contract('BPool', async (accounts) => {
     let WETH; let DAI; // addresses
     let weth; let dai; // TTokens
     let factory; // BPool factory
+    let exchangeProxy;
     let pool; // first pool w/ defaults
     let POOL; //   pool address
 
@@ -89,6 +91,8 @@ contract('BPool', async (accounts) => {
 
     before(async () => {
         factory = await BFactory.deployed();
+        exchangeProxy = await ExchangeProxyMock.deployed()
+        await factory.setExchProxy(exchangeProxy.address)
 
         POOL = await factory.newBPool.call(); // this works fine in clean room
         await factory.newBPool();
@@ -106,6 +110,11 @@ contract('BPool', async (accounts) => {
         await weth.approve(POOL, MAX);
         await dai.approve(POOL, MAX);
 
+        await weth.approve(exchangeProxy.address, MAX);
+        await dai.approve(exchangeProxy.address, MAX);
+
+        await pool.approve(exchangeProxy.address, MAX);
+
         await pool.bind(WETH, toWei(wethBalance), toWei(wethDenorm));
         await pool.bind(DAI, toWei(daiBalance), toWei(daiDenorm));
 
@@ -121,7 +130,9 @@ contract('BPool', async (accounts) => {
             const minAmountOut = '0';
             const maxPrice = MAX;
 
-            const output = await pool.swapExactAmountIn.call(
+            // const output = await pool.swapExactAmountIn.call(
+            const output = await exchangeProxy.swapExactAmountIn.call(
+                pool.address,
                 tokenIn,
                 toWei(tokenAmountIn),
                 tokenOut,
@@ -176,12 +187,14 @@ contract('BPool', async (accounts) => {
 
         it('swapExactAmountOut', async () => {
             const tokenIn = DAI;
-            const maxAmountIn = MAX;
+            const maxAmountIn = await dai.balanceOf(admin);
             const tokenOut = WETH;
             const tokenAmountOut = '1';
             const maxPrice = MAX;
 
-            const output = await pool.swapExactAmountOut.call(
+            // const output = await pool.swapExactAmountOut.call(
+            const output = await exchangeProxy.swapExactAmountOut.call(
+                pool.address,
                 tokenIn,
                 maxAmountIn,
                 tokenOut,
@@ -239,7 +252,10 @@ contract('BPool', async (accounts) => {
 
             // Call function
             const pAo = '1';
-            await pool.joinPool(toWei(pAo), [MAX, MAX]);
+            // await pool.joinPool(toWei(pAo), [MAX, MAX]);
+            const maxWeth = await weth.balanceOf(admin)
+            const maxDai = await dai.balanceOf(admin)
+            await exchangeProxy.joinPool(pool.address, toWei(pAo), [maxWeth, maxDai]);
 
             // Update balance states
             previousPoolBalance = Decimal(currentPoolBalance);
@@ -262,7 +278,8 @@ contract('BPool', async (accounts) => {
             const pAi = 1 / (1 - exitFee);
             const pAiAfterExitFee = pAi * (1 - exitFee);
 
-            await pool.exitPool(toWei(String(pAi)), [toWei('0'), toWei('0')]);
+            // await pool.exitPool(toWei(String(pAi)), [toWei('0'), toWei('0')]);
+            await exchangeProxy.exitPool(pool.address, toWei(String(pAi)), [toWei('0'), toWei('0')]);
 
             // Update balance states
             previousPoolBalance = currentPoolBalance;
@@ -286,9 +303,11 @@ contract('BPool', async (accounts) => {
             // increase tbalance by 1.1^2 after swap fee
             const tAi = (1 / (1 - swapFee * (1 - wethNorm))) * (currentWethBalance * (poolRatio ** (1 / wethNorm) - 1));
 
-            const pAo = await pool.joinswapExternAmountIn.call(WETH, toWei(String(tAi)), toWei('0'));
+            // const pAo = await pool.joinswapExternAmountIn.call(WETH, toWei(String(tAi)), toWei('0'));
+            const pAo = await exchangeProxy.joinswapExternAmountIn.call(pool.address, WETH, toWei(String(tAi)), toWei('0'));
             // Execute txn called above
-            await pool.joinswapExternAmountIn(WETH, toWei(String(tAi)), toWei('0'));
+            // await pool.joinswapExternAmountIn(WETH, toWei(String(tAi)), toWei('0'));
+            await exchangeProxy.joinswapExternAmountIn(pool.address, WETH, toWei(String(tAi)), toWei('0'));
 
             // Update balance states
             previousWethBalance = currentWethBalance;
@@ -318,9 +337,12 @@ contract('BPool', async (accounts) => {
             // Call function
             const poolRatio = 1.1;
             const pAo = currentPoolBalance * (poolRatio - 1);
+            const maxDai = await dai.balanceOf(admin)
 
-            const tAi = await pool.joinswapPoolAmountOut.call(DAI, toWei(String(pAo)), MAX); // 10% of current supply
-            await pool.joinswapPoolAmountOut(DAI, toWei(String(pAo)), MAX);
+            // const tAi = await pool.joinswapPoolAmountOut.call(DAI, toWei(String(pAo)), MAX); // 10% of current supply
+            const tAi = await exchangeProxy.joinswapPoolAmountOut.call(pool.address, DAI, toWei(String(pAo)), maxDai); // 10% of current supply
+            // await pool.joinswapPoolAmountOut(DAI, toWei(String(pAo)), MAX);
+            await exchangeProxy.joinswapPoolAmountOut(pool.address, DAI, toWei(String(pAo)), maxDai);
 
             // Update balance states
             previousPoolBalance = currentPoolBalance;
@@ -354,8 +376,10 @@ contract('BPool', async (accounts) => {
             const poolRatioAfterExitFee = 0.9;
             const pAi = currentPoolBalance * (1 - poolRatioAfterExitFee) * (1 / (1 - exitFee));
 
-            const tAo = await pool.exitswapPoolAmountIn.call(WETH, toWei(String(pAi)), toWei('0'));
-            await pool.exitswapPoolAmountIn(WETH, toWei(String(pAi)), toWei('0'));
+            // const tAo = await pool.exitswapPoolAmountIn.call(WETH, toWei(String(pAi)), toWei('0'));
+            const tAo = await exchangeProxy.exitswapPoolAmountIn.call(pool.address, WETH, toWei(String(pAi)), toWei('0'));
+            // await pool.exitswapPoolAmountIn(WETH, toWei(String(pAi)), toWei('0'));
+            await exchangeProxy.exitswapPoolAmountIn(pool.address, WETH, toWei(String(pAi)), toWei('0'));
 
             // Update balance states
             previousPoolBalance = currentPoolBalance;
@@ -388,9 +412,11 @@ contract('BPool', async (accounts) => {
             const poolRatioAfterExitFee = 0.9;
             const tokenRatioBeforeSwapFee = poolRatioAfterExitFee ** (1 / daiNorm);
             const tAo = currentDaiBalance * (1 - tokenRatioBeforeSwapFee) * (1 - swapFee * (1 - daiNorm));
-
-            const pAi = await pool.exitswapExternAmountOut.call(DAI, toWei(String(tAo)), MAX);
-            await pool.exitswapExternAmountOut(DAI, toWei(String(tAo)), MAX);
+            const maxPoolIn = await pool.balanceOf(admin)
+            // const pAi = await pool.exitswapExternAmountOut.call(DAI, toWei(String(tAo)), MAX);
+            const pAi = await exchangeProxy.exitswapExternAmountOut.call(pool.address, DAI, toWei(String(tAo)), maxPoolIn);
+            // await pool.exitswapExternAmountOut(DAI, toWei(String(tAo)), MAX);
+            await exchangeProxy.exitswapExternAmountOut(pool.address, DAI, toWei(String(tAo)), maxPoolIn);
 
             // Update balance states
             previousDaiBalance = currentDaiBalance;
@@ -421,8 +447,11 @@ contract('BPool', async (accounts) => {
 
         it('pAo = joinswapExternAmountIn(joinswapPoolAmountOut(pAo))', async () => {
             const pAo = 10;
-            const tAi = await pool.joinswapPoolAmountOut.call(WETH, toWei(String(pAo)), MAX);
-            const calculatedPAo = await pool.joinswapExternAmountIn.call(WETH, String(tAi), toWei('0'));
+            const maxAmountIn = await weth.balanceOf(admin)
+            // const tAi = await pool.joinswapPoolAmountOut.call(WETH, toWei(String(pAo)), MAX);
+            const tAi = await exchangeProxy.joinswapPoolAmountOut.call(pool.address, WETH, toWei(String(pAo)), maxAmountIn);
+            // const calculatedPAo = await pool.joinswapExternAmountIn.call(WETH, String(tAi), toWei('0'));
+            const calculatedPAo = await exchangeProxy.joinswapExternAmountIn.call(pool.address, WETH, String(tAi), toWei('0'));
 
             const expected = Decimal(pAo);
             const actual = fromWei(calculatedPAo);
@@ -442,8 +471,11 @@ contract('BPool', async (accounts) => {
 
         it('tAi = joinswapPoolAmountOut(joinswapExternAmountIn(tAi))', async () => {
             const tAi = 1;
-            const pAo = await pool.joinswapExternAmountIn.call(DAI, toWei(String(tAi)), toWei('0'));
-            const calculatedtAi = await pool.joinswapPoolAmountOut.call(DAI, String(pAo), MAX);
+            const maxAmountIn = await dai.balanceOf(admin)
+            // const pAo = await pool.joinswapExternAmountIn.call(DAI, toWei(String(tAi)), toWei('0'));
+            const pAo = await exchangeProxy.joinswapExternAmountIn.call(pool.address, DAI, toWei(String(tAi)), toWei('0'));
+            // const calculatedtAi = await pool.joinswapPoolAmountOut.call(DAI, String(pAo), MAX);
+            const calculatedtAi = await exchangeProxy.joinswapPoolAmountOut.call(pool.address, DAI, String(pAo), maxAmountIn);
 
             const expected = Decimal(tAi);
             const actual = fromWei(calculatedtAi);
@@ -463,8 +495,11 @@ contract('BPool', async (accounts) => {
 
         it('pAi = exitswapExternAmountOut(exitswapPoolAmountIn(pAi))', async () => {
             const pAi = 10;
-            const tAo = await pool.exitswapPoolAmountIn.call(WETH, toWei(String(pAi)), toWei('0'));
-            const calculatedPAi = await pool.exitswapExternAmountOut.call(WETH, String(tAo), MAX);
+            const maxPoolIn = await pool.balanceOf(admin)
+            // const tAo = await pool.exitswapPoolAmountIn.call(WETH, toWei(String(pAi)), toWei('0'));
+            const tAo = await exchangeProxy.exitswapPoolAmountIn.call(pool.address, WETH, toWei(String(pAi)), toWei('0'));
+            // const calculatedPAi = await pool.exitswapExternAmountOut.call(WETH, String(tAo), MAX);
+            const calculatedPAi = await exchangeProxy.exitswapExternAmountOut.call(pool.address, WETH, String(tAo), maxPoolIn);
 
             const expected = Decimal(pAi);
             const actual = fromWei(calculatedPAi);
@@ -484,8 +519,11 @@ contract('BPool', async (accounts) => {
 
         it('tAo = exitswapPoolAmountIn(exitswapExternAmountOut(tAo))', async () => {
             const tAo = '1';
-            const pAi = await pool.exitswapExternAmountOut.call(DAI, toWei(tAo), MAX);
-            const calculatedtAo = await pool.exitswapPoolAmountIn.call(DAI, String(pAi), toWei('0'));
+            const maxPoolIn = await pool.balanceOf(admin)
+            // const pAi = await pool.exitswapExternAmountOut.call(DAI, toWei(tAo), MAX);
+            const pAi = await exchangeProxy.exitswapExternAmountOut.call(pool.address, DAI, toWei(tAo), maxPoolIn);
+            // const calculatedtAo = await pool.exitswapPoolAmountIn.call(DAI, String(pAi), toWei('0'));
+            const calculatedtAo = await exchangeProxy.exitswapPoolAmountIn.call(pool.address, DAI, String(pAi), toWei('0'));
 
             const expected = Decimal(tAo);
             const actual = fromWei(calculatedtAo);
