@@ -6,6 +6,7 @@ const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
 const verbose = process.env.VERBOSE;
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
+const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
 
 contract('BPool', async (accounts) => {
     const admin = accounts[0];
@@ -22,13 +23,17 @@ contract('BPool', async (accounts) => {
         xxx; // TTokens
     let factory; // BPool factory
     let exchangeProxy;
+    let operationsRegistry;
     let pool; // first pool w/ defaults
     let POOL; //   pool address
 
     before(async () => {
         factory = await BFactory.deployed();
         exchangeProxy = await ExchangeProxyMock.deployed()
+        operationsRegistry = await OperationsRegistryMock.deployed()
+
         await factory.setExchProxy(exchangeProxy.address)
+        await factory.setOperationsRegistry(operationsRegistry.address)
 
         POOL = await factory.newBPool.call();
         await factory.newBPool();
@@ -43,6 +48,11 @@ contract('BPool', async (accounts) => {
         MKR = mkr.address;
         DAI = dai.address;
         XXX = xxx.address;
+
+        await operationsRegistry.allowAsset(WETH)
+        await operationsRegistry.allowAsset(MKR)
+        await operationsRegistry.allowAsset(DAI)
+        await operationsRegistry.allowAsset(XXX)
 
         /*
             Tests assume token prices

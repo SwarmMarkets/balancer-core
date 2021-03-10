@@ -45,6 +45,11 @@ contract BFactory is BBronze {
         address indexed exchProxy
     );
 
+    event LOG_OPERATIONREGISTRY(
+        address indexed caller,
+        address indexed operationsRegistry
+    );
+
     mapping(address=>bool) private _isBPool;
 
     function isBPool(address b)
@@ -57,7 +62,7 @@ contract BFactory is BBronze {
         external
         returns (BPoolExtend)
     {
-        BPoolExtend bpool = new BPoolExtend(_poolImpl, _exchProxy, abi.encodeWithSignature("initialize()"));
+        BPoolExtend bpool = new BPoolExtend(_poolImpl, _operationsRegistry, _exchProxy, abi.encodeWithSignature("initialize()"));
         _isBPool[address(bpool)] = true;
         emit LOG_NEW_POOL(msg.sender, address(bpool));
         IBpool(address(bpool)).setController(msg.sender);
@@ -67,11 +72,13 @@ contract BFactory is BBronze {
     address private _blabs;
     address public _poolImpl;
     address public _exchProxy;
+    address public _operationsRegistry;
 
-    constructor(address poolImpl, address exchProxy) public {
+    constructor(address poolImpl, address exchProxy, address operationsRegistry) public {
         _blabs = msg.sender;
         _poolImpl = poolImpl;
         _exchProxy = exchProxy;
+        _operationsRegistry = operationsRegistry;
     }
 
     function getBLabs()
@@ -103,6 +110,14 @@ contract BFactory is BBronze {
         require(msg.sender == _blabs, "ERR_NOT_BLABS");
         emit LOG_EXCHPROXY(msg.sender, exchProxy);
         _exchProxy = exchProxy;
+    }
+
+    function setOperationsRegistry(address operationsRegistry)
+        external
+    {
+        require(msg.sender == _blabs, "ERR_NOT_BLABS");
+        emit LOG_OPERATIONREGISTRY(msg.sender, operationsRegistry);
+        _operationsRegistry = operationsRegistry;
     }
 
     function collect(IERC20 pool)

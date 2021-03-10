@@ -2,6 +2,7 @@ const BPool = artifacts.require('BPool');
 const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
+const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
 const truffleAssert = require('truffle-assertions');
 
 const someAddress = '0x2489991C7AdFAA0DD96D2c46d344CCeaA1C0fD89'
@@ -20,6 +21,7 @@ contract('BFactory', async (accounts) => {
         let factory;
         let pool;
         let exchangeProxy;
+        let operationsRegistry;
         let POOL;
         let WETH;
         let DAI;
@@ -29,6 +31,7 @@ contract('BFactory', async (accounts) => {
         before(async () => {
             factory = await BFactory.deployed();
             exchangeProxy = await ExchangeProxyMock.deployed()
+            operationsRegistry = await OperationsRegistryMock.deployed()
 
             await factory.setExchProxy(exchangeProxy.address)
 
@@ -37,6 +40,11 @@ contract('BFactory', async (accounts) => {
 
             WETH = weth.address;
             DAI = dai.address;
+
+            await operationsRegistry.allowAsset(WETH)
+            await operationsRegistry.allowAsset(DAI)
+
+            await factory.setOperationsRegistry(operationsRegistry.address)
 
             // admin balances
             await weth.mint(admin, toWei('5'));
@@ -109,6 +117,10 @@ contract('BFactory', async (accounts) => {
             await truffleAssert.reverts(factory.setExchProxy(someAddress, { from: nonAdmin }), 'ERR_NOT_BLABS');
         });
 
+        it('nonadmin cant set operations registry', async () => {
+            await truffleAssert.reverts(factory.setOperationsRegistry(someAddress, { from: nonAdmin }), 'ERR_NOT_BLABS');
+        });
+
         it('admin changes blabs address', async () => {
             await factory.setBLabs(user2);
             const blab = await factory.getBLabs();
@@ -125,6 +137,12 @@ contract('BFactory', async (accounts) => {
             await factory.setExchProxy(someAddress, {from: user2});
             const exchProxy = await factory._exchProxy();
             assert.equal(exchProxy, someAddress);
+        });
+
+        it('admin changes operations registry address', async () => {
+            await factory.setOperationsRegistry(someAddress, {from: user2});
+            const operationsRegistry = await factory._operationsRegistry();
+            assert.equal(operationsRegistry, someAddress);
         });
     });
 });

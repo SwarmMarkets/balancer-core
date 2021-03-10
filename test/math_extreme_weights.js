@@ -6,6 +6,7 @@ const BPool = artifacts.require('BPool');
 const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
+const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
 const errorDelta = 10 ** -8;
 const swapFee = 0.001; // 0.001;
 const exitFee = 0;
@@ -22,6 +23,7 @@ contract('BPool', async (accounts) => {
     let weth; let dai;
     let factory; // BPool factory
     let exchangeProxy;
+    let operationsRegistry;
     let pool; // first pool w/ defaults
     let POOL; //   pool address
 
@@ -88,17 +90,24 @@ contract('BPool', async (accounts) => {
     before(async () => {
         factory = await BFactory.deployed();
         exchangeProxy = await ExchangeProxyMock.deployed()
-        await factory.setExchProxy(exchangeProxy.address)
+        operationsRegistry = await OperationsRegistryMock.deployed()
 
-        POOL = await factory.newBPool.call(); // this works fine in clean room
-        await factory.newBPool();
-        pool = await BPool.at(POOL);
+        await factory.setExchProxy(exchangeProxy.address)
 
         weth = await TToken.new('Wrapped Ether', 'WETH', 18);
         dai = await TToken.new('Dai Stablecoin', 'DAI', 18);
 
         WETH = weth.address;
         DAI = dai.address;
+
+        await operationsRegistry.allowAsset(WETH)
+        await operationsRegistry.allowAsset(DAI)
+
+        await factory.setOperationsRegistry(operationsRegistry.address)
+
+        POOL = await factory.newBPool.call(); // this works fine in clean room
+        await factory.newBPool();
+        pool = await BPool.at(POOL);
 
         await weth.mint(admin, MAX);
         await dai.mint(admin, MAX);

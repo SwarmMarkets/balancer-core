@@ -4,6 +4,7 @@ const BPool = artifacts.require('BPool');
 const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
+const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
 
 contract('BPool', async (accounts) => {
     const admin = accounts[0];
@@ -19,6 +20,7 @@ contract('BPool', async (accounts) => {
         zzz; // TTokens
     let factory; // BPool factory
     let exchangeProxy;
+    let operationsRegistry;
     let FACTORY; // factory address
     let pool; // first pool w/ defaults
     let POOL; //   pool address
@@ -26,13 +28,11 @@ contract('BPool', async (accounts) => {
     before(async () => {
         factory = await BFactory.deployed();
         exchangeProxy = await ExchangeProxyMock.deployed()
+        operationsRegistry = await OperationsRegistryMock.deployed()
+
         await factory.setExchProxy(exchangeProxy.address)
 
         FACTORY = factory.address;
-
-        POOL = await factory.newBPool.call();
-        await factory.newBPool();
-        pool = await BPool.at(POOL);
 
         aaa = await TToken.new('AAA', 'AAA', 18);
         bbb = await TToken.new('BBB', 'BBB', 18);
@@ -54,6 +54,21 @@ contract('BPool', async (accounts) => {
         HHH = hhh.address;
         ZZZ = zzz.address;
 
+        await operationsRegistry.allowAsset(AAA)
+        await operationsRegistry.allowAsset(BBB)
+        await operationsRegistry.allowAsset(CCC)
+        await operationsRegistry.allowAsset(DDD)
+        await operationsRegistry.allowAsset(EEE)
+        await operationsRegistry.allowAsset(FFF)
+        await operationsRegistry.allowAsset(GGG)
+        await operationsRegistry.allowAsset(HHH)
+        await operationsRegistry.allowAsset(ZZZ)
+
+        await factory.setOperationsRegistry(operationsRegistry.address)
+
+        POOL = await factory.newBPool.call();
+        await factory.newBPool();
+        pool = await BPool.at(POOL);
 
         // Admin balances
         await aaa.mint(admin, toWei('100'));
