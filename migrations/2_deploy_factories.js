@@ -17,5 +17,5 @@ module.exports = async function (deployer, network, accounts) {
     await deployer.deploy(BPool)
 
     // TODO - this should set the ExchangeProxy and OperationsRegistry addresses from an .env
-    await deployer.deploy(BFactory, BPool.address, '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000');
+    await deployer.deploy(BFactory, BPool.address);
 };

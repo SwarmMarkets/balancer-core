@@ -76,11 +76,9 @@ contract BFactory is BBronze, Authorizable {
     address public _exchProxy;
     address public _operationsRegistry;
 
-    constructor(address poolImpl, address exchProxy, address operationsRegistry) public {
+    constructor(address poolImpl) public {
         _blabs = msg.sender;
         _poolImpl = poolImpl;
-        _exchProxy = exchProxy;
-        _operationsRegistry = operationsRegistry;
     }
 
     function getBLabs()
