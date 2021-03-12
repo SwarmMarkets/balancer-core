@@ -5,6 +5,7 @@ const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
 const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
+const AuthorizationMock = artifacts.require('AuthorizationMock');
 
 contract('BPool', async (accounts) => {
     const admin = accounts[0];
@@ -21,6 +22,7 @@ contract('BPool', async (accounts) => {
     let factory; // BPool factory
     let exchangeProxy;
     let operationsRegistry;
+    let authorization;
     let FACTORY; // factory address
     let pool; // first pool w/ defaults
     let POOL; //   pool address
@@ -29,8 +31,10 @@ contract('BPool', async (accounts) => {
         factory = await BFactory.deployed();
         exchangeProxy = await ExchangeProxyMock.deployed()
         operationsRegistry = await OperationsRegistryMock.deployed()
+        authorization = await AuthorizationMock.deployed()
 
         await factory.setExchProxy(exchangeProxy.address)
+        await factory.setAuthorization(authorization.address)
 
         FACTORY = factory.address;
 
