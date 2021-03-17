@@ -1793,7 +1793,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-03-16T11:33:09.889Z",
+  "updatedAt": "2021-03-17T18:31:27.668Z",
   "devdoc": {
     "author": "Protofire",
     "details": "Contract module which provides an authorization mechanism. This module is used through inheritance. It will make available the modifier `onlyAuthorized`, which can be applied to your functions to restrict their use.",
