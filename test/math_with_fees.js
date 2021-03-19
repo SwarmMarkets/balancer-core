@@ -11,6 +11,7 @@ const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
 const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
+const AuthorizationMock = artifacts.require('AuthorizationMock');
 const errorDelta = 10 ** -8;
 const swapFee = 10 ** -3; // 0.001;
 const exitFee = 0;
@@ -28,6 +29,7 @@ contract('BPool', async (accounts) => {
     let factory; // BPool factory
     let exchangeProxy;
     let operationsRegistry;
+    let authorization;
     let pool; // first pool w/ defaults
     let POOL; //   pool address
 
@@ -95,8 +97,10 @@ contract('BPool', async (accounts) => {
         factory = await BFactory.deployed();
         exchangeProxy = await ExchangeProxyMock.deployed()
         operationsRegistry = await OperationsRegistryMock.deployed()
+        authorization = await AuthorizationMock.deployed()
 
         await factory.setExchProxy(exchangeProxy.address)
+        await factory.setAuthorization(authorization.address)
 
         weth = await TToken.new('Wrapped Ether', 'WETH', 18);
         dai = await TToken.new('Dai Stablecoin', 'DAI', 18);

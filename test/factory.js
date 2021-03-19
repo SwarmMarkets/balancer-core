@@ -3,6 +3,7 @@ const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
 const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
+const AuthorizationMock = artifacts.require('AuthorizationMock');
 const truffleAssert = require('truffle-assertions');
 
 const someAddress = '0x2489991C7AdFAA0DD96D2c46d344CCeaA1C0fD89'
@@ -22,6 +23,7 @@ contract('BFactory', async (accounts) => {
         let pool;
         let exchangeProxy;
         let operationsRegistry;
+        let authorization;
         let POOL;
         let WETH;
         let DAI;
@@ -32,8 +34,10 @@ contract('BFactory', async (accounts) => {
             factory = await BFactory.deployed();
             exchangeProxy = await ExchangeProxyMock.deployed()
             operationsRegistry = await OperationsRegistryMock.deployed()
+            authorization = await AuthorizationMock.deployed()
 
             await factory.setExchProxy(exchangeProxy.address)
+            await factory.setAuthorization(authorization.address)
 
             weth = await TToken.new('Wrapped Ether', 'WETH', 18);
             dai = await TToken.new('Dai Stablecoin', 'DAI', 18);
@@ -121,6 +125,10 @@ contract('BFactory', async (accounts) => {
             await truffleAssert.reverts(factory.setOperationsRegistry(someAddress, { from: nonAdmin }), 'ERR_NOT_BLABS');
         });
 
+        it('nonadmin cant set authorization address', async () => {
+            await truffleAssert.reverts(factory.setAuthorization(someAddress, { from: nonAdmin }), 'ERR_NOT_BLABS');
+        });
+
         it('admin changes blabs address', async () => {
             await factory.setBLabs(user2);
             const blab = await factory.getBLabs();
@@ -144,5 +152,22 @@ contract('BFactory', async (accounts) => {
             const operationsRegistry = await factory._operationsRegistry();
             assert.equal(operationsRegistry, someAddress);
         });
+
+        it('admin changes authorization address', async () => {
+            await factory.setAuthorization(someAddress, {from: user2});
+            const authorization = await factory.authorization();
+            assert.equal(authorization, someAddress);
+        });
+
+        describe('un-authorized', () => {
+            before(async () => {
+                await factory.setAuthorization(authorization.address, {from: user2})
+                await authorization.setAuthorized(false)
+            })
+
+            it('newBPool should fail', async () => {
+                await truffleAssert.reverts(factory.newBPool(), 'Authorizable: not authorized');
+            })
+        })
     });
 });

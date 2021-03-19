@@ -6,6 +6,7 @@ const BFactory = artifacts.require('BFactory');
 const TToken = artifacts.require('TToken');
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
 const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
+const AuthorizationMock = artifacts.require('AuthorizationMock');
 const swapFee = 10 ** -3; // 0.001;
 const exitFee = 0;
 
@@ -21,8 +22,9 @@ contract('BPoolExtend', async (accounts) => {
     let weth; let dai; // TTokens
     let factory; // BPool factory
     let exchangeProxy;
-    let pool; // first pool w/ defaults
     let operationsRegistry;
+    let authorization;
+    let pool; // first pool w/ defaults
     let POOL; //   pool address
 
     const wethBalance = '4';
@@ -45,9 +47,11 @@ contract('BPoolExtend', async (accounts) => {
         factory = await BFactory.deployed();
         exchangeProxy = await ExchangeProxyMock.deployed()
         operationsRegistry = await OperationsRegistryMock.deployed()
+        authorization = await AuthorizationMock.deployed()
 
         await factory.setExchProxy(exchangeProxy.address)
         await factory.setOperationsRegistry(operationsRegistry.address)
+        await factory.setAuthorization(authorization.address)
 
         POOL = await factory.newBPool.call(); // this works fine in clean room
         await factory.newBPool();

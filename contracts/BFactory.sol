@@ -18,13 +18,14 @@ pragma solidity ^0.7.0;
 import "./BColor.sol";
 import "./BPoolExtend.sol";
 import "./IERC20.sol";
+import "swarm-smart-contracts/contracts/authorization/Authorizable.sol";
 
 interface IBpool {
     function initialize() external;
     function setController(address manager) external;
 }
 
-contract BFactory is BBronze {
+contract BFactory is BBronze, Authorizable {
     event LOG_NEW_POOL(
         address indexed caller,
         address indexed pool
@@ -60,6 +61,7 @@ contract BFactory is BBronze {
 
     function newBPool()
         external
+        onlyAuthorized
         returns (BPoolExtend)
     {
         BPoolExtend bpool = new BPoolExtend(_poolImpl, _operationsRegistry, _exchProxy, abi.encodeWithSignature("initialize()"));
@@ -118,6 +120,13 @@ contract BFactory is BBronze {
         require(msg.sender == _blabs, "ERR_NOT_BLABS");
         emit LOG_OPERATIONREGISTRY(msg.sender, operationsRegistry);
         _operationsRegistry = operationsRegistry;
+    }
+
+    function setAuthorization(address _authorization)
+        external
+    {
+        require(msg.sender == _blabs, "ERR_NOT_BLABS");
+        _setAuthorization(_authorization);
     }
 
     function collect(IERC20 pool)
