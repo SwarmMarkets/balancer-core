@@ -15,12 +15,13 @@ pragma solidity ^0.7.0;
 
 import "@openzeppelin/contracts/proxy/Proxy.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155Holder.sol";
 
 interface IOperationsRegistry {
     function allowedAssets(address asset) external view returns (bool);
 }
 
-contract BPoolExtend is Proxy {
+contract BPoolExtend is Proxy, ERC1155Holder {
     address public immutable implementation;
     address public immutable exchangeProxy;
     address public immutable operationsRegistry;
