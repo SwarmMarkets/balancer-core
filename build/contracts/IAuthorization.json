@@ -1,0 +1,1361 @@
+{
+  "contractName": "IAuthorization",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_permissions",
+          "type": "address"
+        }
+      ],
+      "name": "setPermissions",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_eurPriceFeed",
+          "type": "address"
+        }
+      ],
+      "name": "setEurPriceFeed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_operationsRegistry",
+          "type": "address"
+        }
+      ],
+      "name": "setOperationsRegistry",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_tradingLimit",
+          "type": "uint256"
+        }
+      ],
+      "name": "setTradingLimint",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_user",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_asset",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes4",
+          "name": "_operation",
+          "type": "bytes4"
+        },
+        {
+          "internalType": "bytes",
+          "name": "_data",
+          "type": "bytes"
+        }
+      ],
+      "name": "isAuthorized",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.7.4+commit.3f05b770\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_user\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_asset\",\"type\":\"address\"},{\"internalType\":\"bytes4\",\"name\":\"_operation\",\"type\":\"bytes4\"},{\"internalType\":\"bytes\",\"name\":\"_data\",\"type\":\"bytes\"}],\"name\":\"isAuthorized\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_eurPriceFeed\",\"type\":\"address\"}],\"name\":\"setEurPriceFeed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operationsRegistry\",\"type\":\"address\"}],\"name\":\"setOperationsRegistry\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_permissions\",\"type\":\"address\"}],\"name\":\"setPermissions\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tradingLimit\",\"type\":\"uint256\"}],\"name\":\"setTradingLimint\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"Protofire\",\"details\":\"Interface to be implemented by any Authorization logic contract.\",\"kind\":\"dev\",\"methods\":{\"isAuthorized(address,address,bytes4,bytes)\":{\"details\":\"Determins if a user is allowed to perform an operation.\",\"params\":{\"_asset\":\"address of the contract using Authorizable `onlyAuthorized` modifier.\",\"_data\":\"msg.data from function using Authorizable `onlyAuthorized` modifier.\",\"_operation\":\"msg.sig from function using Authorizable `onlyAuthorized` modifier.\",\"_user\":\"msg.sender from function using Authorizable `onlyAuthorized` modifier.\"},\"returns\":{\"_0\":\"a boolean signaling the authorization.\"}},\"setEurPriceFeed(address)\":{\"details\":\"Sets `_eurPriceFeed` as the new EUR Price feed module.\",\"params\":{\"_eurPriceFeed\":\"The address of the new EUR Price feed module.\"}},\"setOperationsRegistry(address)\":{\"details\":\"Sets `_operationsRegistry` as the new OperationsRegistry module.\",\"params\":{\"_operationsRegistry\":\"The address of the new OperationsRegistry module.\"}},\"setPermissions(address)\":{\"details\":\"Sets `_permissions` as the new Permissions module.\",\"params\":{\"_permissions\":\"The address of the new Pemissions module.\"}},\"setTradingLimint(uint256)\":{\"details\":\"Sets `_tradingLimit` as the new traiding limit.\",\"params\":{\"_tradingLimit\":\"The value of the new traiding limit.\"}}},\"title\":\"IAuthorization\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"swarm-smart-contracts/contracts/authorization/IAuthorization.sol\":\"IAuthorization\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":100},\"remappings\":[]},\"sources\":{\"swarm-smart-contracts/contracts/authorization/IAuthorization.sol\":{\"keccak256\":\"0x2c9e77eaaecc3fffcf13fbffdd31cd0bd780112defec4a789ed73c817ae4e63e\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://2f9493ecc8a0ba4aac7f9fc43dad0491741f55ec709a6204c142ecd896d3c3be\",\"dweb:/ipfs/Qmer8zRKkMfqVvFo3PtDpWb5pWqkTC9MtkMtdwLLhrdnVs\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.0;\n\n/**\n * @title IAuthorization\n * @author Protofire\n * @dev Interface to be implemented by any Authorization logic contract.\n *\n */\ninterface IAuthorization {\n    /**\n     * @dev Sets `_permissions` as the new Permissions module.\n     *\n     * @param _permissions The address of the new Pemissions module.\n     */\n    function setPermissions(address _permissions) external returns (bool);\n\n    /**\n     * @dev Sets `_eurPriceFeed` as the new EUR Price feed module.\n     *\n     * @param _eurPriceFeed The address of the new EUR Price feed module.\n     */\n    function setEurPriceFeed(address _eurPriceFeed) external returns (bool);\n\n    /**\n     * @dev Sets `_operationsRegistry` as the new OperationsRegistry module.\n     *\n     * @param _operationsRegistry The address of the new OperationsRegistry module.\n     */\n    function setOperationsRegistry(address _operationsRegistry) external returns (bool);\n\n    /**\n     * @dev Sets `_tradingLimit` as the new traiding limit.\n     *\n     * @param _tradingLimit The value of the new traiding limit.\n     */\n    function setTradingLimint(uint256 _tradingLimit) external returns (bool);\n\n    /**\n     * @dev Determins if a user is allowed to perform an operation.\n     *\n     * @param _user msg.sender from function using Authorizable `onlyAuthorized` modifier.\n     * @param _asset address of the contract using Authorizable `onlyAuthorized` modifier.\n     * @param _operation msg.sig from function using Authorizable `onlyAuthorized` modifier.\n     * @param _data msg.data from function using Authorizable `onlyAuthorized` modifier.\n     * @return a boolean signaling the authorization.\n     */\n    function isAuthorized(\n        address _user,\n        address _asset,\n        bytes4 _operation,\n        bytes calldata _data\n    ) external returns (bool);\n}\n",
+  "sourcePath": "swarm-smart-contracts/contracts/authorization/IAuthorization.sol",
+  "ast": {
+    "absolutePath": "swarm-smart-contracts/contracts/authorization/IAuthorization.sol",
+    "exportedSymbols": {
+      "IAuthorization": [
+        7124
+      ]
+    },
+    "id": 7125,
+    "license": "Unlicense",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 7076,
+        "literals": [
+          "solidity",
+          "^",
+          "0.7",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "37:23:24"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 7077,
+          "nodeType": "StructuredDocumentation",
+          "src": "62:129:24",
+          "text": " @title IAuthorization\n @author Protofire\n @dev Interface to be implemented by any Authorization logic contract."
+        },
+        "fullyImplemented": false,
+        "id": 7124,
+        "linearizedBaseContracts": [
+          7124
+        ],
+        "name": "IAuthorization",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 7078,
+              "nodeType": "StructuredDocumentation",
+              "src": "223:150:24",
+              "text": " @dev Sets `_permissions` as the new Permissions module.\n @param _permissions The address of the new Pemissions module."
+            },
+            "functionSelector": "456d28d9",
+            "id": 7085,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setPermissions",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7081,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7080,
+                  "mutability": "mutable",
+                  "name": "_permissions",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7085,
+                  "src": "402:20:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 7079,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "402:7:24",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "401:22:24"
+            },
+            "returnParameters": {
+              "id": 7084,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7083,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7085,
+                  "src": "442:4:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 7082,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "442:4:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "441:6:24"
+            },
+            "scope": 7124,
+            "src": "378:70:24",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7086,
+              "nodeType": "StructuredDocumentation",
+              "src": "454:159:24",
+              "text": " @dev Sets `_eurPriceFeed` as the new EUR Price feed module.\n @param _eurPriceFeed The address of the new EUR Price feed module."
+            },
+            "functionSelector": "9b00f17f",
+            "id": 7093,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setEurPriceFeed",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7089,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7088,
+                  "mutability": "mutable",
+                  "name": "_eurPriceFeed",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7093,
+                  "src": "643:21:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 7087,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "643:7:24",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "642:23:24"
+            },
+            "returnParameters": {
+              "id": 7092,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7091,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7093,
+                  "src": "684:4:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 7090,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "684:4:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "683:6:24"
+            },
+            "scope": 7124,
+            "src": "618:72:24",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7094,
+              "nodeType": "StructuredDocumentation",
+              "src": "696:179:24",
+              "text": " @dev Sets `_operationsRegistry` as the new OperationsRegistry module.\n @param _operationsRegistry The address of the new OperationsRegistry module."
+            },
+            "functionSelector": "728daa56",
+            "id": 7101,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setOperationsRegistry",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7097,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7096,
+                  "mutability": "mutable",
+                  "name": "_operationsRegistry",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7101,
+                  "src": "911:27:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 7095,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "911:7:24",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "910:29:24"
+            },
+            "returnParameters": {
+              "id": 7100,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7099,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7101,
+                  "src": "958:4:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 7098,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "958:4:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "957:6:24"
+            },
+            "scope": 7124,
+            "src": "880:84:24",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7102,
+              "nodeType": "StructuredDocumentation",
+              "src": "970:143:24",
+              "text": " @dev Sets `_tradingLimit` as the new traiding limit.\n @param _tradingLimit The value of the new traiding limit."
+            },
+            "functionSelector": "d379a0d9",
+            "id": 7109,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setTradingLimint",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7105,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7104,
+                  "mutability": "mutable",
+                  "name": "_tradingLimit",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7109,
+                  "src": "1144:21:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 7103,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1144:7:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1143:23:24"
+            },
+            "returnParameters": {
+              "id": 7108,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7107,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7109,
+                  "src": "1185:4:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 7106,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1185:4:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1184:6:24"
+            },
+            "scope": 7124,
+            "src": "1118:73:24",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7110,
+              "nodeType": "StructuredDocumentation",
+              "src": "1197:504:24",
+              "text": " @dev Determins if a user is allowed to perform an operation.\n @param _user msg.sender from function using Authorizable `onlyAuthorized` modifier.\n @param _asset address of the contract using Authorizable `onlyAuthorized` modifier.\n @param _operation msg.sig from function using Authorizable `onlyAuthorized` modifier.\n @param _data msg.data from function using Authorizable `onlyAuthorized` modifier.\n @return a boolean signaling the authorization."
+            },
+            "functionSelector": "5c50893a",
+            "id": 7123,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isAuthorized",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7119,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7112,
+                  "mutability": "mutable",
+                  "name": "_user",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7123,
+                  "src": "1737:13:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 7111,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1737:7:24",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7114,
+                  "mutability": "mutable",
+                  "name": "_asset",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7123,
+                  "src": "1760:14:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 7113,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1760:7:24",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7116,
+                  "mutability": "mutable",
+                  "name": "_operation",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7123,
+                  "src": "1784:17:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes4",
+                    "typeString": "bytes4"
+                  },
+                  "typeName": {
+                    "id": 7115,
+                    "name": "bytes4",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1784:6:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7118,
+                  "mutability": "mutable",
+                  "name": "_data",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7123,
+                  "src": "1811:20:24",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 7117,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1811:5:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1727:110:24"
+            },
+            "returnParameters": {
+              "id": 7122,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7121,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7123,
+                  "src": "1856:4:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 7120,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1856:4:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1855:6:24"
+            },
+            "scope": 7124,
+            "src": "1706:156:24",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 7125,
+        "src": "192:1672:24"
+      }
+    ],
+    "src": "37:1828:24"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "swarm-smart-contracts/contracts/authorization/IAuthorization.sol",
+      "exportedSymbols": {
+        "IAuthorization": [
+          7124
+        ]
+      },
+      "license": "Unlicense"
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.7",
+            ".0"
+          ]
+        },
+        "id": 7076,
+        "name": "PragmaDirective",
+        "src": "37:23:24"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "interface",
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            7124
+          ],
+          "name": "IAuthorization",
+          "scope": 7125
+        },
+        "children": [
+          {
+            "attributes": {
+              "text": " @title IAuthorization\n @author Protofire\n @dev Interface to be implemented by any Authorization logic contract."
+            },
+            "id": 7077,
+            "name": "StructuredDocumentation",
+            "src": "62:129:24"
+          },
+          {
+            "attributes": {
+              "functionSelector": "456d28d9",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "setPermissions",
+              "scope": 7124,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "text": " @dev Sets `_permissions` as the new Permissions module.\n @param _permissions The address of the new Pemissions module."
+                },
+                "id": 7078,
+                "name": "StructuredDocumentation",
+                "src": "223:150:24"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_permissions",
+                      "scope": 7085,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 7079,
+                        "name": "ElementaryTypeName",
+                        "src": "402:7:24"
+                      }
+                    ],
+                    "id": 7080,
+                    "name": "VariableDeclaration",
+                    "src": "402:20:24"
+                  }
+                ],
+                "id": 7081,
+                "name": "ParameterList",
+                "src": "401:22:24"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "scope": 7085,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 7082,
+                        "name": "ElementaryTypeName",
+                        "src": "442:4:24"
+                      }
+                    ],
+                    "id": 7083,
+                    "name": "VariableDeclaration",
+                    "src": "442:4:24"
+                  }
+                ],
+                "id": 7084,
+                "name": "ParameterList",
+                "src": "441:6:24"
+              }
+            ],
+            "id": 7085,
+            "name": "FunctionDefinition",
+            "src": "378:70:24"
+          },
+          {
+            "attributes": {
+              "functionSelector": "9b00f17f",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "setEurPriceFeed",
+              "scope": 7124,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "text": " @dev Sets `_eurPriceFeed` as the new EUR Price feed module.\n @param _eurPriceFeed The address of the new EUR Price feed module."
+                },
+                "id": 7086,
+                "name": "StructuredDocumentation",
+                "src": "454:159:24"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_eurPriceFeed",
+                      "scope": 7093,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 7087,
+                        "name": "ElementaryTypeName",
+                        "src": "643:7:24"
+                      }
+                    ],
+                    "id": 7088,
+                    "name": "VariableDeclaration",
+                    "src": "643:21:24"
+                  }
+                ],
+                "id": 7089,
+                "name": "ParameterList",
+                "src": "642:23:24"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "scope": 7093,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 7090,
+                        "name": "ElementaryTypeName",
+                        "src": "684:4:24"
+                      }
+                    ],
+                    "id": 7091,
+                    "name": "VariableDeclaration",
+                    "src": "684:4:24"
+                  }
+                ],
+                "id": 7092,
+                "name": "ParameterList",
+                "src": "683:6:24"
+              }
+            ],
+            "id": 7093,
+            "name": "FunctionDefinition",
+            "src": "618:72:24"
+          },
+          {
+            "attributes": {
+              "functionSelector": "728daa56",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "setOperationsRegistry",
+              "scope": 7124,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "text": " @dev Sets `_operationsRegistry` as the new OperationsRegistry module.\n @param _operationsRegistry The address of the new OperationsRegistry module."
+                },
+                "id": 7094,
+                "name": "StructuredDocumentation",
+                "src": "696:179:24"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_operationsRegistry",
+                      "scope": 7101,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 7095,
+                        "name": "ElementaryTypeName",
+                        "src": "911:7:24"
+                      }
+                    ],
+                    "id": 7096,
+                    "name": "VariableDeclaration",
+                    "src": "911:27:24"
+                  }
+                ],
+                "id": 7097,
+                "name": "ParameterList",
+                "src": "910:29:24"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "scope": 7101,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 7098,
+                        "name": "ElementaryTypeName",
+                        "src": "958:4:24"
+                      }
+                    ],
+                    "id": 7099,
+                    "name": "VariableDeclaration",
+                    "src": "958:4:24"
+                  }
+                ],
+                "id": 7100,
+                "name": "ParameterList",
+                "src": "957:6:24"
+              }
+            ],
+            "id": 7101,
+            "name": "FunctionDefinition",
+            "src": "880:84:24"
+          },
+          {
+            "attributes": {
+              "functionSelector": "d379a0d9",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "setTradingLimint",
+              "scope": 7124,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "text": " @dev Sets `_tradingLimit` as the new traiding limit.\n @param _tradingLimit The value of the new traiding limit."
+                },
+                "id": 7102,
+                "name": "StructuredDocumentation",
+                "src": "970:143:24"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_tradingLimit",
+                      "scope": 7109,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 7103,
+                        "name": "ElementaryTypeName",
+                        "src": "1144:7:24"
+                      }
+                    ],
+                    "id": 7104,
+                    "name": "VariableDeclaration",
+                    "src": "1144:21:24"
+                  }
+                ],
+                "id": 7105,
+                "name": "ParameterList",
+                "src": "1143:23:24"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "scope": 7109,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 7106,
+                        "name": "ElementaryTypeName",
+                        "src": "1185:4:24"
+                      }
+                    ],
+                    "id": 7107,
+                    "name": "VariableDeclaration",
+                    "src": "1185:4:24"
+                  }
+                ],
+                "id": 7108,
+                "name": "ParameterList",
+                "src": "1184:6:24"
+              }
+            ],
+            "id": 7109,
+            "name": "FunctionDefinition",
+            "src": "1118:73:24"
+          },
+          {
+            "attributes": {
+              "functionSelector": "5c50893a",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "isAuthorized",
+              "scope": 7124,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "text": " @dev Determins if a user is allowed to perform an operation.\n @param _user msg.sender from function using Authorizable `onlyAuthorized` modifier.\n @param _asset address of the contract using Authorizable `onlyAuthorized` modifier.\n @param _operation msg.sig from function using Authorizable `onlyAuthorized` modifier.\n @param _data msg.data from function using Authorizable `onlyAuthorized` modifier.\n @return a boolean signaling the authorization."
+                },
+                "id": 7110,
+                "name": "StructuredDocumentation",
+                "src": "1197:504:24"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_user",
+                      "scope": 7123,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 7111,
+                        "name": "ElementaryTypeName",
+                        "src": "1737:7:24"
+                      }
+                    ],
+                    "id": 7112,
+                    "name": "VariableDeclaration",
+                    "src": "1737:13:24"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_asset",
+                      "scope": 7123,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 7113,
+                        "name": "ElementaryTypeName",
+                        "src": "1760:7:24"
+                      }
+                    ],
+                    "id": 7114,
+                    "name": "VariableDeclaration",
+                    "src": "1760:14:24"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_operation",
+                      "scope": 7123,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes4",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes4",
+                          "type": "bytes4"
+                        },
+                        "id": 7115,
+                        "name": "ElementaryTypeName",
+                        "src": "1784:6:24"
+                      }
+                    ],
+                    "id": 7116,
+                    "name": "VariableDeclaration",
+                    "src": "1784:17:24"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_data",
+                      "scope": 7123,
+                      "stateVariable": false,
+                      "storageLocation": "calldata",
+                      "type": "bytes",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes",
+                          "type": "bytes"
+                        },
+                        "id": 7117,
+                        "name": "ElementaryTypeName",
+                        "src": "1811:5:24"
+                      }
+                    ],
+                    "id": 7118,
+                    "name": "VariableDeclaration",
+                    "src": "1811:20:24"
+                  }
+                ],
+                "id": 7119,
+                "name": "ParameterList",
+                "src": "1727:110:24"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "scope": 7123,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 7120,
+                        "name": "ElementaryTypeName",
+                        "src": "1856:4:24"
+                      }
+                    ],
+                    "id": 7121,
+                    "name": "VariableDeclaration",
+                    "src": "1856:4:24"
+                  }
+                ],
+                "id": 7122,
+                "name": "ParameterList",
+                "src": "1855:6:24"
+              }
+            ],
+            "id": 7123,
+            "name": "FunctionDefinition",
+            "src": "1706:156:24"
+          }
+        ],
+        "id": 7124,
+        "name": "ContractDefinition",
+        "src": "192:1672:24"
+      }
+    ],
+    "id": 7125,
+    "name": "SourceUnit",
+    "src": "37:1828:24"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.7.4+commit.3f05b770.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.3.4",
+  "updatedAt": "2021-03-17T18:31:27.669Z",
+  "devdoc": {
+    "author": "Protofire",
+    "details": "Interface to be implemented by any Authorization logic contract.",
+    "kind": "dev",
+    "methods": {
+      "isAuthorized(address,address,bytes4,bytes)": {
+        "details": "Determins if a user is allowed to perform an operation.",
+        "params": {
+          "_asset": "address of the contract using Authorizable `onlyAuthorized` modifier.",
+          "_data": "msg.data from function using Authorizable `onlyAuthorized` modifier.",
+          "_operation": "msg.sig from function using Authorizable `onlyAuthorized` modifier.",
+          "_user": "msg.sender from function using Authorizable `onlyAuthorized` modifier."
+        },
+        "returns": {
+          "_0": "a boolean signaling the authorization."
+        }
+      },
+      "setEurPriceFeed(address)": {
+        "details": "Sets `_eurPriceFeed` as the new EUR Price feed module.",
+        "params": {
+          "_eurPriceFeed": "The address of the new EUR Price feed module."
+        }
+      },
+      "setOperationsRegistry(address)": {
+        "details": "Sets `_operationsRegistry` as the new OperationsRegistry module.",
+        "params": {
+          "_operationsRegistry": "The address of the new OperationsRegistry module."
+        }
+      },
+      "setPermissions(address)": {
+        "details": "Sets `_permissions` as the new Permissions module.",
+        "params": {
+          "_permissions": "The address of the new Pemissions module."
+        }
+      },
+      "setTradingLimint(uint256)": {
+        "details": "Sets `_tradingLimit` as the new traiding limit.",
+        "params": {
+          "_tradingLimit": "The value of the new traiding limit."
+        }
+      }
+    },
+    "title": "IAuthorization",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
