@@ -7,6 +7,8 @@ const TToken = artifacts.require('TToken');
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
 const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
 const AuthorizationMock = artifacts.require('AuthorizationMock');
+const PermissionManagerMock = artifacts.require('PermissionManagerMock');
+const PermissionsMock = artifacts.require('PermissionsMock');
 const swapFee = 10 ** -3; // 0.001;
 const exitFee = 0;
 
@@ -24,6 +26,8 @@ contract('BPoolExtend', async (accounts) => {
     let exchangeProxy;
     let operationsRegistry;
     let authorization;
+    let permissionManager;
+    let permissions;
     let pool; // first pool w/ defaults
     let POOL; //   pool address
 
@@ -48,10 +52,13 @@ contract('BPoolExtend', async (accounts) => {
         exchangeProxy = await ExchangeProxyMock.deployed()
         operationsRegistry = await OperationsRegistryMock.deployed()
         authorization = await AuthorizationMock.deployed()
+        permissionManager = await PermissionManagerMock.deployed()
+        permissions = await PermissionsMock.deployed()
 
         await factory.setExchProxy(exchangeProxy.address)
         await factory.setOperationsRegistry(operationsRegistry.address)
         await factory.setAuthorization(authorization.address)
+        await factory.setPermissionManager(permissionManager.address)
 
         POOL = await factory.newBPool.call(); // this works fine in clean room
         await factory.newBPool();
@@ -102,6 +109,14 @@ contract('BPoolExtend', async (accounts) => {
         await pool.setSwapFee(toWei(String(swapFee)));
 
         await pool.finalize();
+      })
+    })
+
+    describe('ERC1155 Holder', () => {
+      it('Should allow to receive ERC1155 items', async () => {
+        await permissions.assingItem(POOL)
+        const balance = await permissions.balanceOf(POOL, 1)
+        assert.equal(balance.toString(), '1');
       })
     })
 

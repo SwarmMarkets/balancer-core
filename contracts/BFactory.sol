@@ -25,6 +25,10 @@ interface IBpool {
     function setController(address manager) external;
 }
 
+interface IPermissionManager {
+    function assignItem(uint256 _itemId, address[] memory _accounts) external;
+}
+
 contract BFactory is BBronze, Authorizable {
     event LOG_NEW_POOL(
         address indexed caller,
@@ -51,6 +55,11 @@ contract BFactory is BBronze, Authorizable {
         address indexed operationsRegistry
     );
 
+    event LOG_PERMISSIONMANAGER(
+        address indexed caller,
+        address indexed permissionManager
+    );
+
     mapping(address=>bool) private _isBPool;
 
     function isBPool(address b)
@@ -68,6 +77,9 @@ contract BFactory is BBronze, Authorizable {
         _isBPool[address(bpool)] = true;
         emit LOG_NEW_POOL(msg.sender, address(bpool));
         IBpool(address(bpool)).setController(msg.sender);
+        address[] memory accounts = new address[](1);
+        accounts[0] = address(bpool);
+        IPermissionManager(_permissionManager).assignItem(2, accounts);
         return bpool;
     }
 
@@ -75,6 +87,7 @@ contract BFactory is BBronze, Authorizable {
     address public _poolImpl;
     address public _exchProxy;
     address public _operationsRegistry;
+    address public _permissionManager;
 
     constructor(address poolImpl) public {
         _blabs = msg.sender;
@@ -118,6 +131,14 @@ contract BFactory is BBronze, Authorizable {
         require(msg.sender == _blabs, "ERR_NOT_BLABS");
         emit LOG_OPERATIONREGISTRY(msg.sender, operationsRegistry);
         _operationsRegistry = operationsRegistry;
+    }
+
+    function setPermissionManager(address permissionManager)
+        external
+    {
+        require(msg.sender == _blabs, "ERR_NOT_BLABS");
+        emit LOG_PERMISSIONMANAGER(msg.sender, permissionManager);
+        _permissionManager = permissionManager;
     }
 
     function setAuthorization(address _authorization)

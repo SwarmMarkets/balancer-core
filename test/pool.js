@@ -8,6 +8,7 @@ const verbose = process.env.VERBOSE;
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
 const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
 const AuthorizationMock = artifacts.require('AuthorizationMock');
+const PermissionManagerMock = artifacts.require('PermissionManagerMock');
 
 contract('BPool', async (accounts) => {
     const admin = accounts[0];
@@ -26,6 +27,7 @@ contract('BPool', async (accounts) => {
     let exchangeProxy;
     let operationsRegistry;
     let authorization;
+    let permissionManager;
     let pool; // first pool w/ defaults
     let POOL; //   pool address
 
@@ -34,10 +36,12 @@ contract('BPool', async (accounts) => {
         exchangeProxy = await ExchangeProxyMock.deployed()
         operationsRegistry = await OperationsRegistryMock.deployed()
         authorization = await AuthorizationMock.deployed()
+        permissionManager = await PermissionManagerMock.deployed()
 
         await factory.setExchProxy(exchangeProxy.address)
         await factory.setOperationsRegistry(operationsRegistry.address)
         await factory.setAuthorization(authorization.address)
+        await factory.setPermissionManager(permissionManager.address)
 
         POOL = await factory.newBPool.call();
         await factory.newBPool();

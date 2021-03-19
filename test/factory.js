@@ -4,6 +4,7 @@ const TToken = artifacts.require('TToken');
 const ExchangeProxyMock = artifacts.require('ExchangeProxyMock');
 const OperationsRegistryMock = artifacts.require('OperationsRegistryMock');
 const AuthorizationMock = artifacts.require('AuthorizationMock');
+const PermissionManagerMock = artifacts.require('PermissionManagerMock');
 const truffleAssert = require('truffle-assertions');
 
 const someAddress = '0x2489991C7AdFAA0DD96D2c46d344CCeaA1C0fD89'
@@ -24,6 +25,7 @@ contract('BFactory', async (accounts) => {
         let exchangeProxy;
         let operationsRegistry;
         let authorization;
+        let permissionManager;
         let POOL;
         let WETH;
         let DAI;
@@ -35,9 +37,11 @@ contract('BFactory', async (accounts) => {
             exchangeProxy = await ExchangeProxyMock.deployed()
             operationsRegistry = await OperationsRegistryMock.deployed()
             authorization = await AuthorizationMock.deployed()
+            permissionManager = await PermissionManagerMock.deployed()
 
             await factory.setExchProxy(exchangeProxy.address)
             await factory.setAuthorization(authorization.address)
+            await factory.setPermissionManager(permissionManager.address)
 
             weth = await TToken.new('Wrapped Ether', 'WETH', 18);
             dai = await TToken.new('Dai Stablecoin', 'DAI', 18);
@@ -86,6 +90,11 @@ contract('BFactory', async (accounts) => {
             assert.isTrue(isBPool);
         });
 
+        it('should assign permission to new pool', async () => {
+            const assigned = await permissionManager.assigned(POOL);
+            assert.isTrue(assigned);
+        });
+
         it('fails nonAdmin calls collect', async () => {
             await truffleAssert.reverts(factory.collect(nonAdmin, { from: nonAdmin }), 'ERR_NOT_BLABS');
         });
@@ -125,6 +134,10 @@ contract('BFactory', async (accounts) => {
             await truffleAssert.reverts(factory.setOperationsRegistry(someAddress, { from: nonAdmin }), 'ERR_NOT_BLABS');
         });
 
+        it('nonadmin cant set permission manager', async () => {
+            await truffleAssert.reverts(factory.setPermissionManager(someAddress, { from: nonAdmin }), 'ERR_NOT_BLABS');
+        });
+
         it('nonadmin cant set authorization address', async () => {
             await truffleAssert.reverts(factory.setAuthorization(someAddress, { from: nonAdmin }), 'ERR_NOT_BLABS');
         });
@@ -151,6 +164,12 @@ contract('BFactory', async (accounts) => {
             await factory.setOperationsRegistry(someAddress, {from: user2});
             const operationsRegistry = await factory._operationsRegistry();
             assert.equal(operationsRegistry, someAddress);
+        });
+
+        it('admin changes permission manager address', async () => {
+            await factory.setPermissionManager(someAddress, {from: user2});
+            const permissionManager = await factory._permissionManager();
+            assert.equal(permissionManager, someAddress);
         });
 
         it('admin changes authorization address', async () => {
