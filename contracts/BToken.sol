@@ -57,13 +57,13 @@ abstract contract BTokenBase is BNum {
 
 abstract contract BToken is Initializable, BTokenBase, IERC20 {
 
-    string  private _name     = "Balancer Pool Token";
-    string  private _symbol   = "BPT";
+    string  private _name     = "Swarm Pool Token";
+    string  private _symbol   = "SPT";
     uint8   private _decimals = 18;
 
     function __BToken_init_unchained() internal initializer {
-        _name     = "Balancer Pool Token";
-        _symbol   = "BPT";
+        _name     = "Swarm Pool Token";
+        _symbol   = "SPT";
         _decimals = 18;
     }
 
