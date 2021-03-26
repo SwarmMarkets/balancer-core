@@ -640,7 +640,7 @@ contract('BPool', async (accounts) => {
     describe('BToken interactions', () => {
         it('Token descriptors', async () => {
             const name = await pool.name();
-            assert.equal(name, 'Swarm Pool Token');
+            assert.equal(name, 'Swarm Markets Pool Token');
 
             const symbol = await pool.symbol();
             assert.equal(symbol, 'SPT');
