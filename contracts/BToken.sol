@@ -56,10 +56,9 @@ abstract contract BTokenBase is BNum {
 }
 
 abstract contract BToken is Initializable, BTokenBase, IERC20 {
-
-    string  private _name     = "Swarm Markets Pool Token";
-    string  private _symbol   = "SPT";
-    uint8   private _decimals = 18;
+    string  private _name;
+    string  private _symbol;
+    uint8   private _decimals;
 
     function __BToken_init_unchained() internal initializer {
         _name     = "Swarm Markets Pool Token";
