@@ -43,6 +43,16 @@ Most users will want to consume the ABI definitions for BFactory and BPool.
 
 This project follows the standard Truffle project structure. 
 
+you should set in `.env` file the following variables
+
+```
+
+INFURA_PROJECT_ID=yourkey
+MNEMONIC="some twelve word mnemonic"
+GAS_PRICE=3000000000
+```
+TODO: gas price isn't being used. This is necessary for a mainnet deploy
+
 ```
 yarn compile   # build artifacts to `build/contracts`
 yarn testrpc # run ganache

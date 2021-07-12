@@ -2,21 +2,24 @@ require('dotenv').config();
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
 let INFURA_PROJECT_ID;
-let DEPLOYMENT_ACCOUNT_PK;
+let MNEMONIC;
 let GAS_PRICE;
 
 if (process.env.NODE_ENV !== 'test') {
-  [INFURA_PROJECT_ID, DEPLOYMENT_ACCOUNT_PK, GAS_PRICE] = getConfigs();
+  [INFURA_PROJECT_ID, MNEMONIC, GAS_PRICE] = getConfigs();
 }
 
 module.exports = {
     networks: {
-        // development: {
-        //     host: 'localhost', // Localhost (default: none)
-        //     port: 8545, // Standard Ethereum port (default: none)
-        //     network_id: '*', // Any network (default: none)
-        //     gas: 10000000,
-        // },
+        development: {
+            provider: () => new HDWalletProvider({
+                mnemonic: MNEMONIC,
+                providerOrUrl: `http://localhost:8545`
+            }),
+            network_id: '*', // Any network (default: none)
+            gas: 10000000,
+            gasPrice: GAS_PRICE,
+        },
         coverage: {
             host: 'localhost',
             network_id: '*',
@@ -26,7 +29,7 @@ module.exports = {
         },
         rinkeby: {
             provider: () => new HDWalletProvider({
-                privateKeys: [DEPLOYMENT_ACCOUNT_PK],
+                mnemonic: MNEMONIC,
                 providerOrUrl: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`
             }),
             network_id: 4,
@@ -36,7 +39,7 @@ module.exports = {
         },
         kovan: {
             provider: () => new HDWalletProvider({
-                privateKeys: [DEPLOYMENT_ACCOUNT_PK],
+                mnemonic: MNEMONIC,
                 providerOrUrl: `https://kovan.infura.io/v3/${INFURA_PROJECT_ID}`
             }),
             network_id: 42,
@@ -46,7 +49,7 @@ module.exports = {
         },
         mainnet: {
             provider: () => new HDWalletProvider({
-                privateKeys: [DEPLOYMENT_ACCOUNT_PK],
+                mnemonic: MNEMONIC,
                 providerOrUrl: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`
             }),
             network_id: 1,
@@ -80,18 +83,15 @@ module.exports = {
 function getConfigs() {
 
     const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID;
-    const DEPLOYMENT_ACCOUNT_PK = (process.env.DEPLOYMENT_ACCOUNT_PK || '').replace(
-      /^0x/,
-      ''
-    );
+    const MNEMONIC = (process.env.MNEMONIC || '');
     const GAS_PRICE = process.env.GAS_PRICE || 150000000000; // 150GWei
 
     if (
       !INFURA_PROJECT_ID ||
-      !DEPLOYMENT_ACCOUNT_PK
+      !MNEMONIC
     ) {
       throw 'Wrong configs';
     }
 
-    return [INFURA_PROJECT_ID, DEPLOYMENT_ACCOUNT_PK, GAS_PRICE];
+    return [INFURA_PROJECT_ID, MNEMONIC, GAS_PRICE];
   }
