@@ -1083,10 +1083,10 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@openzeppelin/contracts@3.4.0-solc-0.7":
-  version "3.4.0-solc-0.7"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-3.4.0-solc-0.7.tgz#c4fbd1b761714745c4bce6fc97e8b44d4c29d5b9"
-  integrity sha512-bJz1YgmeKRYVnYZedYSiy5/YmaYTxOhb76ftCseN1z2r4DK7PwCGvRCF2fRavTxAmGkIC/Q5zSy/Dr3OerPw0w==
+"@openzeppelin/contracts@4.4.1":
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.4.1.tgz#3382db2cd83ab565ed9626765e7da92944b45de8"
+  integrity sha512-o+pHCf/yMLSlV5MkDQEzEQL402i6SoRnktru+0rdSxVEFZcTzzGhZCAtZjUFyKGazMSv1TilzMg+RbED1N8XHQ==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
@@ -12811,9 +12811,10 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-swarm-smart-contracts@Altoros/swarm-markets-smart-contracts:
+swarm-smart-contracts@SwarmMarkets/trade-smart-contracts:
   version "0.0.1"
-  resolved "git+ssh://git@github.com/Altoros/swarm-markets-smart-contracts.git#098a680201f2f3c25027783a2036165278ca8d7d"
+  uid "6236ef213836d7c47462f0c8e7a4cc2f882c6efe"
+  resolved "https://codeload.github.com/SwarmMarkets/trade-smart-contracts/tar.gz/6236ef213836d7c47462f0c8e7a4cc2f882c6efe"
 
 symbol-observable@^1.0.3, symbol-observable@^1.0.4, symbol-observable@^1.2.0:
   version "1.2.0"
