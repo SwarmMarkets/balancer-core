@@ -12811,9 +12811,9 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-swarm-smart-contracts@Altoros/swarm-markets-smart-contracts:
+swarm-smart-contracts@SwarmMarkets/trade-smart-contracts:
   version "0.0.1"
-  resolved "git+ssh://git@github.com/Altoros/swarm-markets-smart-contracts.git#098a680201f2f3c25027783a2036165278ca8d7d"
+  resolved "git+ssh://git@github.com/SwarmMarkets/trade-smart-contracts.git#8b641101562a1175fead144457ae0b17b8e9e44f"
 
 symbol-observable@^1.0.3, symbol-observable@^1.0.4, symbol-observable@^1.2.0:
   version "1.2.0"
